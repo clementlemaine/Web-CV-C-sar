@@ -27,23 +27,6 @@
   $('[data-close]', modal).addEventListener('click', () => modal.close());
   modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
 
-  // --- sonnette de réception
-  let actx;
-  const bell = $('.bell');
-  bell.addEventListener('click', () => {
-    bell.classList.remove('ring'); void bell.offsetWidth; bell.classList.add('ring');
-    try {
-      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      const t = actx.currentTime;
-      [[2093, .35], [2637, .18], [4186, .08]].forEach(([f, g]) => {
-        const o = actx.createOscillator(), v = actx.createGain();
-        o.type = 'sine'; o.frequency.value = f;
-        v.gain.setValueAtTime(0, t); v.gain.linearRampToValueAtTime(g, t + .005); v.gain.exponentialRampToValueAtTime(.0001, t + 1.6);
-        o.connect(v).connect(actx.destination); o.start(t); o.stop(t + 1.7);
-      });
-    } catch (_) {}
-  });
-
   // --- apparitions
   const io = new IntersectionObserver(es => es.forEach(en => {
     if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
@@ -80,18 +63,26 @@
     });
   }
 
-  // --- scroll : mur, New York, nav active
-  const wallSec = $('.wall-sec');
-  const bricks = $$('.brick').sort((a, b) => a.dataset.n - b.dataset.n);
-  const layerOf = bricks.map(b => +b.closest('.wall-row').dataset.layer);
-  const count = $('[data-wall-count]');
-  const cards = $$('.wall-card');
-  const dots = $$('.dots i');
+  // --- scroll : trajet, New York, nav active
+  const routeSec = $('.route-sec');
+  const line = $('.route-line', routeSec);
+  const plane = $('.plane', routeSec);
+  const stops = $$('.stop', routeSec);
+  const legs = $$('.leg', routeSec);
+  const L = line.getTotalLength();
+  line.style.strokeDasharray = L;
+  // position de chaque escale le long du tracé (0, 1/3, 2/3, 1)
+  const at = stops.map((g, i) => {
+    const len = L * i / (stops.length - 1);
+    const pt = line.getPointAtLength(len);
+    g.setAttribute('transform', `translate(${pt.x} ${pt.y})`);
+    return len;
+  });
   const ny = $('[data-ny]');
   const nySteps = $$('.ny-step');
   const navLinks = $$('.nav-links a');
   const secs = navLinks.map(a => $(a.getAttribute('href')));
-  let lastN = -1, lastStep = -1;
+  let lastLeg = -1, lastStep = -1;
 
   const progress = el => {
     const r = el.getBoundingClientRect();
@@ -99,15 +90,18 @@
   };
 
   const onScroll = () => {
-    const p = progress(wallSec);
-    const n = reduce ? bricks.length : Math.round(clamp(p / .9) * bricks.length);
-    if (n !== lastN) {
-      lastN = n;
-      bricks.forEach((b, i) => b.classList.toggle('on', i < n));
-      count.textContent = String(n).padStart(2, '0');
-      const layer = n === 0 ? -1 : layerOf[n - 1];
-      cards.forEach(c => c.classList.toggle('is-on', +c.dataset.card === layer));
-      dots.forEach((d, i) => d.classList.toggle('on', i === layer + 1));
+    const d = reduce ? L : clamp(progress(routeSec) / .92) * L;
+    line.style.strokeDashoffset = L - d;
+    const p1 = line.getPointAtLength(Math.max(0, d)), p2 = line.getPointAtLength(Math.min(L, d + 1));
+    const ang = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+    plane.setAttribute('transform', `translate(${p1.x} ${p1.y}) rotate(${ang})`);
+    plane.classList.toggle('done', d >= L - 1);
+    let leg = 0;
+    at.forEach((len, i) => { if (d >= len - 2) leg = i; });
+    stops.forEach((g, i) => { g.classList.toggle('on', d >= at[i] - 2); g.classList.toggle('cur', i === leg); });
+    if (leg !== lastLeg) {
+      lastLeg = leg;
+      legs.forEach((el, i) => el.classList.toggle('is-on', i === leg));
     }
 
     const s = Math.min(nySteps.length - 1, Math.floor(progress(ny) * nySteps.length));

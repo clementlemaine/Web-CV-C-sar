@@ -9,36 +9,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-from content import ADDRESS, EDUCATION, EMAIL, EXPERIENCES, LANGS, LINKEDIN, NAME, PHONE, T, WALL
+from content import ADDRESS, EDUCATION, EMAIL, EXPERIENCES, LANGS, LINKEDIN, NAME, PHONE, ROUTE, T
 
 ROOT = Path(__file__).parent
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-FONTS = "https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap"
+FONTS = "https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=Instrument+Serif:ital@0;1&display=swap"
 
 e = html.escape
-
-# Icônes au trait (24×24) pour les briques du mur
-ICONS = {
-    "plate": '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3.5"/>',
-    "run": '<path d="M5 12h11M12 7l5 5-5 5"/><path d="M3 8h4M3 16h4"/>',
-    "roof": '<path d="M3 11l9-6 9 6"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/>',
-    "glass": '<path d="M6 4h12l-6 8z"/><path d="M12 12v7M8 20h8"/>',
-    "wave": '<path d="M3 14c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M3 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><circle cx="16" cy="7" r="2.5"/>',
-    "globe": '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/>',
-    "spark": '<path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/>',
-    "chat": '<path d="M4 5h16v10H9l-5 4z"/>',
-    "cap": '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
-    "key": '<circle cx="8" cy="8" r="4.5"/><path d="M11.2 11.2 20 20M16 16l2.2-2.2M18.2 18.2l2-2"/>',
-    "star": '<path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8 6.6 19.7l1.1-6.1L3.2 9.4l6.1-.8z"/>',
-    "bell": '<path d="M4 17h16M5 17a7 7 0 0114 0"/><path d="M12 8V6M10 6h4"/><path d="M3 20h18"/>',
-    "tray": '<path d="M3 15h18M5 15a7 7 0 0114 0"/><path d="M12 8V7"/><path d="M8 19h8"/>',
-}
-
-
-def icon(name, cls="ico"):
-    return (f'<svg class="{cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" '
-            f'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{ICONS[name]}</svg>')
-
 
 ARROW = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>'
 DOWN = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2v10M4 8l4 4 4-4M3 14h10"/></svg>'
@@ -62,19 +39,24 @@ def page(lang):
     langs = "".join(f'<a href="../{l}/" hreflang="{l}"{cur if l == lang else ""}>{l.upper()}</a>' for l in LANGS)
     nav = "".join(f'<a href="#{i}">{e(l)}</a>' for i, l in zip(["parcours", "experiences", "formation", "contact"], t["nav"]))
 
-    # mur
-    total = sum(len(r) for r in WALL)
-    rows, n = [], 0
-    for li, row in enumerate(WALL):
-        bricks = []
-        for label, ic in row:
-            bricks.append(f'<span class="brick" data-n="{n}">{icon(ic)}<span>{e(label)}</span></span>')
-            n += 1
-        rows.append(f'<div class="wall-row" data-layer="{li}">{"".join(bricks)}</div>')
-    intro = t["wall_intro"]
-    layer_cards = [f'<div class="wall-card is-on" data-card="-1"><p class="eyebrow-sm">{e(intro[0])}</p><h3>{e(intro[1])}</h3><p>{e(intro[2])}</p></div>']
-    layer_cards += [f'<div class="wall-card" data-card="{i}"><p class="eyebrow-sm">{e(a)}</p><h3>{e(b)}</h3><p>{e(c)}</p></div>'
-                    for i, (a, b, c) in enumerate(t["wall_layers"])]
+    # trajet
+    stops_svg = "".join(
+        f'<g class="stop" data-stop="{i}"><circle class="stop-halo" r="18"/><circle class="stop-dot" r="7"/>'
+        f'<text class="stop-code" y="-26">{r["code"]}</text><text class="stop-city" y="40">{e(r["city"])}</text></g>'
+        for i, r in enumerate(ROUTE))
+    panels = []
+    for i, (r, (country, title, items, note)) in enumerate(zip(ROUTE, t["stops"])):
+        lis = "".join(f'<li><span class="it-role">{e(a)}</span><span class="it-venue">{e(b)}</span>'
+                      f'{f"<span class=it-year>{e(c)}</span>" if c else ""}</li>' for a, b, c in items)
+        panels.append(f"""
+          <article class="leg{' is-on' if i == 0 else ''}" data-leg="{i}">
+            <div class="leg-head">
+              <p class="leg-meta">{e(t['route_label'])} {i + 1:02d} · {e(country)} · {e(r['years'][lang])}</p>
+              <h3 class="leg-city">{e(r['city'])}</h3>
+              <p class="leg-title">{e(title)}</p>
+            </div>
+            <div class="leg-body"><ul>{lis}</ul><p class="leg-note">{e(note)}</p></div>
+          </article>""")
 
     z = t["zuma"]
     zuma_roles = "".join(f'<li style="--k:{i}"><span class="role-n">{i + 1}</span><div><strong>{e(a)}</strong><small>{e(b)}</small></div></li>'
@@ -145,18 +127,9 @@ def page(lang):
     <p class="hero-label">{e(t['hero_place'])}</p>
   </div>
   <div class="hero-mid">
+    <p class="hero-hello"><i></i><span>{e(t['hello'])}</span><i></i></p>
     <h1 class="hero-name"><span class="n1">{letters("César", 0)}</span><span class="n2">{letters("Mateu", 5)}</span></h1>
-    <button class="bell" type="button" aria-label="{e(t['bell'])}">
-      <svg viewBox="0 0 200 150" fill="none" aria-hidden="true">
-        <defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e2b8"/><stop offset=".45" stop-color="#c99b55"/><stop offset="1" stop-color="#6b4a1e"/></linearGradient>
-        <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3530"/><stop offset="1" stop-color="#15130f"/></linearGradient></defs>
-        <g class="bell-top"><rect x="95" y="16" width="10" height="16" rx="3" fill="url(#bg1)"/><rect x="88" y="10" width="24" height="8" rx="4" fill="url(#bg1)"/>
-        <path d="M30 110 A70 70 0 0 1 170 110 Z" fill="url(#bg1)"/><path d="M48 92 A55 55 0 0 1 92 46" stroke="#fff6dd" stroke-opacity=".55" stroke-width="4" stroke-linecap="round"/></g>
-        <rect x="18" y="108" width="164" height="14" rx="7" fill="url(#bg2)"/><rect x="26" y="122" width="148" height="12" rx="4" fill="#0e0c0a"/>
-      </svg>
-      <span class="bell-hint">{e(t['bell'])}</span>
-      <span class="ding" aria-hidden="true">ding!</span>
-    </button>
+    <p class="hero-cities">Toulouse <b>·</b> New York <b>·</b> Madrid <b>·</b> Ibiza</p>
   </div>
   <div class="hero-bottom">
     <p class="hero-bio">{e(t['hero_bio'])}</p>
@@ -168,21 +141,22 @@ def page(lang):
   <a class="scroll-cue" href="#parcours">{e(t['scroll'])}<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></a>
 </section>
 
-<section class="wall-sec" id="parcours" style="--total:{total}">
-  <div class="wall-pin">
+<section class="route-sec" id="parcours">
+  <div class="route-pin">
     <div class="wrap">
-      <div class="sec-head">
-        <div><p class="eyebrow">{e(t['wall_eyebrow'])}</p><h2>{e(t['wall_h'])}</h2></div>
-        <p class="counter"><b data-wall-count>00</b> / {total:02d}</p>
+      <div class="route-head">
+        <div><p class="eyebrow">{e(t['route_eyebrow'])}</p><h2>{e(t['route_h'])}</h2></div>
+        <p class="route-hint">{e(t['route_hint'])} <span>↓</span></p>
       </div>
-      <div class="wall-grid">
-        <div class="wall-side">
-          <div class="wall-cards card">{''.join(layer_cards)}</div>
-          <div class="dots"><i class="on"></i><i></i><i></i><i></i></div>
-        </div>
-        <div class="wall">{''.join(reversed(rows))}<div class="wall-floor"></div></div>
+      <div class="route-map">
+        <svg viewBox="0 0 1000 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <path class="route-ghost" d="M60 210 C 180 40, 300 40, 380 150 S 560 280, 660 150 S 860 40, 940 170"/>
+          <path class="route-line" d="M60 210 C 180 40, 300 40, 380 150 S 560 280, 660 150 S 860 40, 940 170"/>
+          {stops_svg}
+          <g class="plane"><path d="M-12 0 L10 -2 L14 0 L10 2 Z M-2 -1 L-6 -11 L-2 -11 L5 -1 Z M-2 1 L-6 11 L-2 11 L5 1 Z M-11 -1 L-14 -6 L-12 -6 L-8 -1 Z M-11 1 L-14 6 L-12 6 L-8 1 Z"/></g>
+        </svg>
       </div>
-      <p class="caption">{e(t['wall_caption'])}</p>
+      <div class="legs">{''.join(panels)}</div>
     </div>
   </div>
 </section>

@@ -11,7 +11,7 @@
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <script>try{var s=localStorage.getItem('cm-theme');if(s)document.documentElement.dataset.theme=s;}catch(_){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=Instrument+Serif:ital@0;1&display=swap">
 <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
@@ -35,18 +35,9 @@
     <p class="hero-label">Madrid, España</p>
   </div>
   <div class="hero-mid">
+    <p class="hero-hello"><i></i><span>Bienvenido — soy</span><i></i></p>
     <h1 class="hero-name"><span class="n1"><span class="l" style="--i:0">C</span><span class="l" style="--i:1">é</span><span class="l" style="--i:2">s</span><span class="l" style="--i:3">a</span><span class="l" style="--i:4">r</span></span><span class="n2"><span class="l" style="--i:5">M</span><span class="l" style="--i:6">a</span><span class="l" style="--i:7">t</span><span class="l" style="--i:8">e</span><span class="l" style="--i:9">u</span></span></h1>
-    <button class="bell" type="button" aria-label="Toca">
-      <svg viewBox="0 0 200 150" fill="none" aria-hidden="true">
-        <defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e2b8"/><stop offset=".45" stop-color="#c99b55"/><stop offset="1" stop-color="#6b4a1e"/></linearGradient>
-        <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3530"/><stop offset="1" stop-color="#15130f"/></linearGradient></defs>
-        <g class="bell-top"><rect x="95" y="16" width="10" height="16" rx="3" fill="url(#bg1)"/><rect x="88" y="10" width="24" height="8" rx="4" fill="url(#bg1)"/>
-        <path d="M30 110 A70 70 0 0 1 170 110 Z" fill="url(#bg1)"/><path d="M48 92 A55 55 0 0 1 92 46" stroke="#fff6dd" stroke-opacity=".55" stroke-width="4" stroke-linecap="round"/></g>
-        <rect x="18" y="108" width="164" height="14" rx="7" fill="url(#bg2)"/><rect x="26" y="122" width="148" height="12" rx="4" fill="#0e0c0a"/>
-      </svg>
-      <span class="bell-hint">Toca</span>
-      <span class="ding" aria-hidden="true">ding!</span>
-    </button>
+    <p class="hero-cities">Toulouse <b>·</b> New York <b>·</b> Madrid <b>·</b> Ibiza</p>
   </div>
   <div class="hero-bottom">
     <p class="hero-bio">Estudio dirección hotelera en Vatel, en Madrid. Antes aprendí el oficio en el terreno: en sala y en barra en Toulouse, en los clubes de Nueva York y después en dos casas de Ibiza.</p>
@@ -58,21 +49,54 @@
   <a class="scroll-cue" href="#parcours">Desliza<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></a>
 </section>
 
-<section class="wall-sec" id="parcours" style="--total:13">
-  <div class="wall-pin">
+<section class="route-sec" id="parcours">
+  <div class="route-pin">
     <div class="wrap">
-      <div class="sec-head">
-        <div><p class="eyebrow">Lo que me ha formado</p><h2>Mi Trayectoria</h2></div>
-        <p class="counter"><b data-wall-count>00</b> / 13</p>
+      <div class="route-head">
+        <div><p class="eyebrow">De escala en escala</p><h2>Mi Trayectoria</h2></div>
+        <p class="route-hint">Desliza para hacer el viaje <span>↓</span></p>
       </div>
-      <div class="wall-grid">
-        <div class="wall-side">
-          <div class="wall-cards card"><div class="wall-card is-on" data-card="-1"><p class="eyebrow-sm">En construcción</p><h3>Desliza: la trayectoria se construye</h3><p>Cada fila es una etapa: de mis primeros extras en Toulouse a las temporadas en Ibiza.</p></div><div class="wall-card" data-card="0"><p class="eyebrow-sm">01 — Toulouse · 2019–2023</p><h3>El terreno</h3><p>Runner a los 16, después maître, jefe de barra y bar manager en tres locales del grupo All 4 You.</p></div><div class="wall-card" data-card="1"><p class="eyebrow-sm">02 — Nueva York · 2022</p><h3>La apertura</h3><p>Ocho meses en Nueva York: el inglés, la noche neoyorquina y la organización de fiestas en cuatro clubes.</p></div><div class="wall-card" data-card="2"><p class="eyebrow-sm">03 — Madrid e Ibiza · 2024–2026</p><h3>La hotelería</h3><p>Vatel Madrid y después dos temporadas en Ibiza: un resort de cinco estrellas y después Zuma, el restaurante japonés contemporáneo.</p></div></div>
-          <div class="dots"><i class="on"></i><i></i><i></i><i></i></div>
-        </div>
-        <div class="wall"><div class="wall-row" data-layer="2"><span class="brick" data-n="8"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><span>Vatel Madrid</span></span><span class="brick" data-n="9"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4.5"/><path d="M11.2 11.2 20 20M16 16l2.2-2.2M18.2 18.2l2-2"/></svg><span>7Pines Ibiza</span></span><span class="brick" data-n="10"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8 6.6 19.7l1.1-6.1L3.2 9.4l6.1-.8z"/></svg><span>Zuma Ibiza</span></span><span class="brick" data-n="11"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17h16M5 17a7 7 0 0114 0"/><path d="M12 8V6M10 6h4"/><path d="M3 20h18"/></svg><span>Guest relations</span></span><span class="brick" data-n="12"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 15h18M5 15a7 7 0 0114 0"/><path d="M12 8V7"/><path d="M8 19h8"/></svg><span>Chef de rang</span></span></div><div class="wall-row" data-layer="1"><span class="brick" data-n="5"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/></svg><span>EF New York</span></span><span class="brick" data-n="6"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/></svg><span>Événementiel</span></span><span class="brick" data-n="7"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v10H9l-5 4z"/></svg><span>English</span></span></div><div class="wall-row" data-layer="0"><span class="brick" data-n="0"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3.5"/></svg><span>La Compagnie Française</span></span><span class="brick" data-n="1"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h11M12 7l5 5-5 5"/><path d="M3 8h4M3 16h4"/></svg><span>Runner</span></span><span class="brick" data-n="2"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-6 9 6"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg><span>Ma Biche sur le Toit</span></span><span class="brick" data-n="3"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12l-6 8z"/><path d="M12 12v7M8 20h8"/></svg><span>Chef barman</span></span><span class="brick" data-n="4"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M3 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><circle cx="16" cy="7" r="2.5"/></svg><span>L&#x27;Envol Côté Plage</span></span></div><div class="wall-floor"></div></div>
+      <div class="route-map">
+        <svg viewBox="0 0 1000 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <path class="route-ghost" d="M60 210 C 180 40, 300 40, 380 150 S 560 280, 660 150 S 860 40, 940 170"/>
+          <path class="route-line" d="M60 210 C 180 40, 300 40, 380 150 S 560 280, 660 150 S 860 40, 940 170"/>
+          <g class="stop" data-stop="0"><circle class="stop-halo" r="18"/><circle class="stop-dot" r="7"/><text class="stop-code" y="-26">TLS</text><text class="stop-city" y="40">Toulouse</text></g><g class="stop" data-stop="1"><circle class="stop-halo" r="18"/><circle class="stop-dot" r="7"/><text class="stop-code" y="-26">JFK</text><text class="stop-city" y="40">New York</text></g><g class="stop" data-stop="2"><circle class="stop-halo" r="18"/><circle class="stop-dot" r="7"/><text class="stop-code" y="-26">MAD</text><text class="stop-city" y="40">Madrid</text></g><g class="stop" data-stop="3"><circle class="stop-halo" r="18"/><circle class="stop-dot" r="7"/><text class="stop-code" y="-26">IBZ</text><text class="stop-city" y="40">Ibiza</text></g>
+          <g class="plane"><path d="M-12 0 L10 -2 L14 0 L10 2 Z M-2 -1 L-6 -11 L-2 -11 L5 -1 Z M-2 1 L-6 11 L-2 11 L5 1 Z M-11 -1 L-14 -6 L-12 -6 L-8 -1 Z M-11 1 L-14 6 L-12 6 L-8 1 Z"/></g>
+        </svg>
       </div>
-      <p class="caption">Los comienzos abajo, las últimas temporadas arriba. Desliza para colocarlos.</p>
+      <div class="legs">
+          <article class="leg is-on" data-leg="0">
+            <div class="leg-head">
+              <p class="leg-meta">Escala 01 · Francia · 2019 — 2023</p>
+              <h3 class="leg-city">Toulouse</h3>
+              <p class="leg-title">Donde todo empezó</p>
+            </div>
+            <div class="leg-body"><ul><li><span class="it-role">Runner</span><span class="it-venue">La Compagnie Française</span><span class=it-year>2019</span></li><li><span class="it-role">Maître y jefe de barra</span><span class="it-venue">Ma Biche sur le Toit</span><span class=it-year>2020 — 21</span></li><li><span class="it-role">Bar manager</span><span class="it-venue">L&#x27;Envol Côté Plage</span><span class=it-year>2023</span></li></ul><p class="leg-note">Tres locales del grupo All 4 You, subiendo un escalón cada temporada.</p></div>
+          </article>
+          <article class="leg" data-leg="1">
+            <div class="leg-head">
+              <p class="leg-meta">Escala 02 · Estados Unidos · 2022</p>
+              <h3 class="leg-city">New York</h3>
+              <p class="leg-title">La apertura</p>
+            </div>
+            <div class="leg-body"><ul><li><span class="it-role">Estancia lingüística</span><span class="it-venue">EF New York</span><span class=it-year>8 meses</span></li><li><span class="it-role">Asistente de comunicación</span><span class="it-venue">Le Noir · PHD · Nebula · Marquis</span><span class=it-year>2022</span></li></ul><p class="leg-note">El inglés, la noche neoyorquina y la organización de fiestas en cuatro clubes.</p></div>
+          </article>
+          <article class="leg" data-leg="2">
+            <div class="leg-head">
+              <p class="leg-meta">Escala 03 · España · 2023 — actualidad</p>
+              <h3 class="leg-city">Madrid</h3>
+              <p class="leg-title">La escuela</p>
+            </div>
+            <div class="leg-body"><ul><li><span class="it-role">Comercio internacional</span><span class="it-venue">Universidad Europea</span><span class=it-year>2023 — 24</span></li><li><span class="it-role">Campeón universitario de rugby</span><span class="it-venue">Universidad Europea</span></li><li><span class="it-role">Dirección hotelera</span><span class="it-venue">Vatel Madrid</span><span class=it-year>2024 —</span></li></ul><p class="leg-note">El español a diario, un título con el equipo de rugby y después Vatel.</p></div>
+          </article>
+          <article class="leg" data-leg="3">
+            <div class="leg-head">
+              <p class="leg-meta">Escala 04 · España · 2025 — 2026</p>
+              <h3 class="leg-city">Ibiza</h3>
+              <p class="leg-title">Las grandes casas</p>
+            </div>
+            <div class="leg-body"><ul><li><span class="it-role">Botones y bar (prácticas)</span><span class="it-venue">7Pines Resort Ibiza</span><span class=it-year>2025</span></li><li><span class="it-role">Guest relations · Runner · Jefe de rango</span><span class="it-venue">Zuma Ibiza</span><span class=it-year>2026</span></li></ul><p class="leg-note">Dos temporadas en la isla: un resort de cinco estrellas y después Zuma.</p></div>
+          </article></div>
     </div>
   </div>
 </section>

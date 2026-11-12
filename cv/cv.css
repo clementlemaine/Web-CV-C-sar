@@ -2,9 +2,9 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body { font: 400 9.4pt/1.45 "Instrument Sans", sans-serif; color: #16181d; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.page { width: 210mm; height: 297mm; display: grid; grid-template-columns: 68mm 1fr; overflow: hidden; background: #fffdf8; }
+.page { width: 210mm; height: 297mm; display: grid; grid-template-columns: 68mm 1fr; overflow: hidden; background: #faf5ec; }
 
-aside { background: #0b0a08; color: #d9d3c7; padding: 12mm 8mm 10mm; }
+aside { background: #2b1f16; color: #e2d6c3; padding: 12mm 8mm 10mm; }
 .photo { width: 40mm; height: 46mm; object-fit: cover; object-position: center 20%; display: block; margin: 0 auto 8mm; border-radius: 3mm; }
 aside h3, section h2 { font-size: 7.8pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 3mm; }
 aside h3 { margin-top: 6.5mm; color: #e3a28f; }
@@ -25,4 +25,4 @@ section h2::after { content: ""; flex: 1; height: 1px; background: #e2ddd3; }
 .item p { margin: .6mm 0 0; color: #4a4f56; }
 .item p.where { color: #80242c; font-weight: 600; font-size: 8.6pt; margin-top: .3mm; }
 .chips { display: flex; flex-wrap: wrap; gap: 2mm; }
-.chips span { border: 1px solid #e2ddd3; background: #f7f4ed; border-radius: 99px; padding: 1mm 3mm; font-size: 8.4pt; }
+.chips span { border: 1px solid #e2d6c3; background: #f1e8da; border-radius: 99px; padding: 1mm 3mm; font-size: 8.4pt; }
