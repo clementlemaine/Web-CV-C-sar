@@ -5,7 +5,7 @@ NAME = "César Mateu"
 EMAIL = "cesarmateu2003@gmail.com"
 PHONE = "+33 6 23 15 66 63"
 ADDRESS = "Calle Ramón de la Cruz 76, Madrid"
-SITE_URL = "https://clementlemaine.github.io/Web-CV-C-sar/"  # adresse publique : le QR code y renvoie
+SITE_URL = "https://cesarmateu.github.io/"  # adresse publique : le QR code y renvoie
 LINKEDIN = ""  # à compléter : URL du profil LinkedIn (le bouton est masqué tant que c'est vide)
 
 LANGS = ["fr", "en", "es"]

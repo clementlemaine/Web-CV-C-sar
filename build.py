@@ -22,6 +22,7 @@ e = html.escape
 ARROW = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>'
 DOWN = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2v10M4 8l4 4 4-4M3 14h10"/></svg>'
 PHONE_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>'
+QR_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><path d="M14.5 14.5h2.5v2.5M20.5 14.5v.01M14.5 20.5h.01M17.5 20.5h3v-3" stroke-linecap="round"/></svg>'
 MOON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></svg>'
 
 
@@ -304,6 +305,7 @@ def page(lang):
   <div class="row"><a class="btn btn-quiet btn-sm" href="../assets/qr.png" download="Cesar-Mateu-QR.png">{DOWN} PNG</a>
   <button class="btn btn-primary btn-sm" type="button" data-close>{e(t['close'])}</button></div>
 </dialog>
+<button class="qr-btn" type="button" data-open-qr aria-label="{e(t['qr'])}" title="{e(t['qr'])}">{QR_ICON}<span>{e(t['qr'])}</span></button>
 <button class="phone-btn" type="button" data-phone aria-label="{e(t['mobile_view'])}" title="{e(t['mobile_view'])}">{PHONE_ICON}<span>{e(t['mobile_view'])}</span></button>
 <dialog class="phone-modal" aria-label="{e(t['mobile_view'])}">
   <button class="phone-close" type="button" data-phone-close aria-label="{e(t['close'])}">×</button>

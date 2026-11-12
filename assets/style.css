@@ -482,6 +482,18 @@ p { margin: 0; }
 .qr-url { font-size: 13px; color: #867664; margin-top: 6px; }
 .qr-modal .row { justify-content: center; margin-top: 20px; }
 
+.qr-btn {
+  position: fixed; left: 20px; bottom: 20px; z-index: 90; height: 54px; padding: 0 22px 0 16px; border-radius: 99px; display: inline-flex; align-items: center; gap: 10px;
+  background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent)); font-size: 15px; font-weight: 600; white-space: nowrap;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / .14), 0 14px 32px -10px rgb(var(--c-accent) / .75), 0 4px 10px rgba(0, 0, 0, .2);
+  transition: transform .25s var(--ease), background .2s, color .2s;
+}
+.qr-btn svg { width: 22px; height: 22px; }
+.qr-btn::before { content: ""; position: absolute; inset: 0; border-radius: inherit; animation: phone-ping 2.6s ease-out infinite; pointer-events: none; }
+.qr-btn:hover { transform: translateY(-2px); background: rgb(var(--c-ink)); color: rgb(var(--c-page)); }
+.in-frame .qr-btn { display: none; }
+@media (max-width: 600px) { .qr-btn { left: 16px; bottom: 16px; height: 50px; font-size: 14px; } }
+
 /* ---------- aperçu mobile ---------- */
 .phone-btn {
   position: fixed; right: 20px; bottom: 20px; z-index: 90; height: 50px; padding: 0 20px 0 16px; border-radius: 99px; display: inline-flex; align-items: center; gap: 10px;
