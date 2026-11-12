@@ -1,0 +1,31 @@
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font: 400 9.4pt/1.45 "Manrope", sans-serif; color: #10201b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; display: grid; grid-template-columns: 68mm 1fr; overflow: hidden; background: #fff; }
+
+aside { background: #10201b; color: #e8e1d3; padding: 12mm 8mm 10mm; }
+.photo { width: 40mm; height: 46mm; object-fit: cover; object-position: center 20%; display: block; margin: 0 auto 8mm; border-radius: 2px; outline: 1px solid #b8925a; outline-offset: 3px; }
+aside h3, section h2 {
+  font: 500 7.6pt/1 "JetBrains Mono", monospace; letter-spacing: .2em; text-transform: uppercase; color: #b8925a; margin: 0 0 3mm;
+}
+aside h3 { margin-top: 6.5mm; }
+aside p { margin: 0; color: #c9c3b6; }
+aside ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6mm; color: #c9c3b6; }
+aside b { color: #fff; font-weight: 600; }
+
+section { padding: 14mm 13mm 10mm 12mm; }
+header { border-bottom: 1px solid #d8cfbe; padding-bottom: 6mm; margin-bottom: 6mm; }
+.kicker { font: 500 7.6pt "JetBrains Mono", monospace; letter-spacing: .18em; text-transform: uppercase; color: #8a7347; margin: 0 0 3mm; }
+h1 { font: 300 40pt/0.95 "Fraunces", serif; letter-spacing: -.035em; margin: 0; }
+h1 em { color: #b8925a; }
+section h2 { margin-top: 6mm; display: flex; align-items: center; gap: 3mm; }
+section h2::after { content: ""; flex: 1; height: 1px; background: #e2dacb; }
+.item { display: grid; grid-template-columns: 22mm 1fr; gap: 4mm; padding: 2.2mm 0; break-inside: avoid; }
+.item-when { font: 500 8pt "JetBrains Mono", monospace; color: #10201b; }
+.item-when small { display: block; color: #8a8f88; font-size: 7pt; margin-top: .8mm; letter-spacing: .06em; text-transform: uppercase; }
+.item h4 { margin: 0; font: 500 11pt/1.2 "Fraunces", serif; }
+.item p { margin: .6mm 0 0; color: #4e5a53; }
+.item p.where { color: #8a7347; font-weight: 600; font-size: 8.6pt; margin-top: .4mm; }
+.chips { display: flex; flex-wrap: wrap; gap: 2mm; }
+.chips span { border: 1px solid #d8cfbe; border-radius: 99px; padding: 1mm 3mm; font-size: 8.4pt; }
