@@ -2,133 +2,126 @@
   const doc = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-  // --- loader : une fois par session
-  let seen = false;
-  try { seen = sessionStorage.getItem('cm-seen') === '1'; sessionStorage.setItem('cm-seen', '1'); } catch (_) {}
-  if (seen || reduce) doc.classList.add('skip-loader');
-  const ready = () => requestAnimationFrame(() => doc.classList.add('loaded'));
-  setTimeout(ready, seen || reduce ? 50 : 1500);
+  requestAnimationFrame(() => setTimeout(() => {
+    doc.classList.add('ready');
+    $('.nav-wrap').classList.add('show');
+  }, 80));
 
-  // --- heure de Madrid
-  const fmt = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid' });
-  const tick = () => document.querySelectorAll('[data-clock]').forEach(el => { el.textContent = fmt.format(new Date()); });
-  tick(); setInterval(tick, 15000);
+  // --- thème clair / sombre
+  $('.theme').addEventListener('click', () => {
+    const dark = doc.dataset.theme !== 'dark';
+    doc.dataset.theme = dark ? 'dark' : 'light';
+    try { localStorage.setItem('cm-theme', doc.dataset.theme); } catch (_) {}
+  });
 
   // --- email assemblé côté client
-  const mail = document.querySelector('.mail');
-  if (mail) {
-    const addr = mail.dataset.u + '@' + mail.dataset.d;
-    mail.textContent = addr; mail.href = 'mailto:' + addr;
-    const toast = document.querySelector('.toast');
-    const btn = document.querySelector('.copy');
-    btn.addEventListener('click', () => {
-      const done = () => { toast.textContent = btn.dataset.copied; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 1800); };
-      (navigator.clipboard ? navigator.clipboard.writeText(addr) : Promise.reject()).then(done, () => { location.href = mail.href; });
-    });
-  }
+  const mail = $('.mail');
+  if (mail) { const a = mail.dataset.u + '@' + mail.dataset.d; mail.textContent = a; mail.href = 'mailto:' + a; }
 
-  // --- manifeste : mots qui s'allument au scroll
-  const words = document.querySelector('[data-words]');
-  let wordEls = [];
-  if (words) {
-    words.innerHTML = words.textContent.split(' ').map(w => `<span class="w">${w}</span>`).join(' ');
-    wordEls = [...words.querySelectorAll('.w')];
-  }
+  // --- aperçu du CV
+  const modal = $('.cv-modal');
+  $$('[data-open-cv]').forEach(b => b.addEventListener('click', () => modal.showModal()));
+  $('[data-close]', modal).addEventListener('click', () => modal.close());
+  modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
 
-  // --- tableau des départs : palettes
-  const CHARS = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-';
-  document.querySelectorAll('.flap').forEach(f => {
-    f.innerHTML = [...f.dataset.text].map(c => `<span class="c${c === ' ' ? ' sp' : ''}" data-c="${c}">${c === ' ' ? '' : ' '}</span>`).join('');
+  // --- sonnette de réception
+  let actx;
+  const bell = $('.bell');
+  bell.addEventListener('click', () => {
+    bell.classList.remove('ring'); void bell.offsetWidth; bell.classList.add('ring');
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      const t = actx.currentTime;
+      [[2093, .35], [2637, .18], [4186, .08]].forEach(([f, g]) => {
+        const o = actx.createOscillator(), v = actx.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        v.gain.setValueAtTime(0, t); v.gain.linearRampToValueAtTime(g, t + .005); v.gain.exponentialRampToValueAtTime(.0001, t + 1.6);
+        o.connect(v).connect(actx.destination); o.start(t); o.stop(t + 1.7);
+      });
+    } catch (_) {}
   });
-  const runFlaps = row => row.querySelectorAll('.flap .c:not(.sp)').forEach((c, i) => {
-    const target = c.dataset.c;
-    if (reduce) { c.textContent = target; return; }
-    let n = 6 + i * 2 + Math.floor(Math.random() * 6);
+
+  // --- apparitions
+  const io = new IntersectionObserver(es => es.forEach(en => {
+    if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+  }), { threshold: .2 });
+  $$('[data-reveal]').forEach(el => io.observe(el));
+
+  // --- Zuma : les rôles s'enchaînent
+  const roles = $$('.roles li');
+  let roleTimer;
+  const playRoles = () => {
+    let i = 0;
+    roles.forEach(r => r.classList.remove('on', 'cur'));
+    clearInterval(roleTimer);
     const step = () => {
-      if (n-- <= 0) { c.textContent = target; return; }
-      c.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
-      c.classList.remove('flip'); void c.offsetWidth; c.classList.add('flip');
-      setTimeout(step, 55);
+      roles.forEach((r, k) => { r.classList.toggle('on', k <= i); r.classList.toggle('cur', k === i); });
+      if (++i >= roles.length) { clearInterval(roleTimer); setTimeout(playRoles, 3200); }
     };
-    setTimeout(step, i * 25);
-  });
-
-  // --- compteurs
-  const count = el => {
-    const to = +el.dataset.count, t0 = performance.now(), dur = reduce ? 0 : 1600;
-    const f = now => {
-      const p = dur ? clamp((now - t0) / dur) : 1;
-      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
-      if (p < 1) requestAnimationFrame(f);
-    };
-    requestAnimationFrame(f);
+    step(); roleTimer = setInterval(step, 1100);
   };
+  if (roles.length) {
+    if (reduce) roles.forEach(r => r.classList.add('on'));
+    else new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { playRoles(); o.disconnect(); } }, { threshold: .4 }).observe($('.zuma'));
+  }
 
-  // --- révélations
-  const io = new IntersectionObserver(entries => entries.forEach(en => {
-    if (!en.isIntersecting) return;
-    const el = en.target;
-    el.classList.add('in');
-    if (el.classList.contains('board-row')) runFlaps(el);
-    el.querySelectorAll('[data-count]').forEach(count);
-    if (el.dataset.count) count(el);
-    io.unobserve(el);
-  }), { threshold: .25 });
-  document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
-
-  // --- scroll latéral (parcours)
-  const hs = document.querySelector('.hscroll');
-  const track = hs && hs.querySelector('.track');
-  const ghost = hs && hs.querySelector('.hscroll-ghost');
-  const bar = hs && hs.querySelector('.hscroll-progress i');
-  let dist = 0;
-  const size = () => {
-    if (!hs) return;
-    dist = Math.max(0, track.scrollWidth - innerWidth);
-    hs.style.height = (dist + innerHeight) + 'px';
-  };
-
-  const onScroll = () => {
-    if (hs) {
-      const r = hs.getBoundingClientRect();
-      const p = clamp(-r.top / Math.max(1, dist));
-      track.style.transform = `translate3d(${-p * dist}px,0,0)`;
-      ghost.style.transform = `translate3d(${-p * dist * .45}px,0,0)`;
-      bar.style.transform = `scaleX(${p})`;
-    }
-    if (wordEls.length) {
-      const r = words.getBoundingClientRect();
-      const p = clamp((innerHeight * .85 - r.top) / (r.height + innerHeight * .35));
-      const lit = Math.round(p * wordEls.length);
-      wordEls.forEach((w, i) => w.classList.toggle('on', i < lit));
-    }
-  };
-  let raf = 0;
-  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; onScroll(); }); }, { passive: true });
-  addEventListener('resize', () => { size(); onScroll(); });
-  addEventListener('load', () => { size(); onScroll(); });
-  size(); onScroll();
-
-  // --- inclinaison 3D (carte, CV) + curseur — souris uniquement
+  // --- 7Pines : inclinaison
   if (matchMedia('(pointer: fine)').matches && !reduce) {
-    document.querySelectorAll('[data-tilt]').forEach(el => {
-      const base = el.classList.contains('sheet') ? 'rotate(2deg)' : '';
+    $$('[data-tilt]').forEach(el => {
       el.addEventListener('mousemove', e => {
         const r = el.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-        const k = el.classList.contains('sheet') ? 12 : 4;
-        el.style.transform = `rotateY(${x * k}deg) rotateX(${-y * k}deg)`;
+        el.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
       });
-      el.addEventListener('mouseleave', () => { el.style.transform = base; });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
     });
-
-    const cur = document.querySelector('.cursor');
-    let cx = 0, cy = 0, tx = 0, ty = 0;
-    addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; cur.classList.add('on'); });
-    document.addEventListener('mouseleave', () => cur.classList.remove('on'));
-    document.addEventListener('mouseover', e => cur.classList.toggle('big', !!e.target.closest('a, button, .ticket')));
-    const loop = () => { cx += (tx - cx) * .2; cy += (ty - cy) * .2; cur.style.transform = `translate(${cx}px,${cy}px)`; requestAnimationFrame(loop); };
-    loop();
   }
+
+  // --- scroll : mur, New York, nav active
+  const wallSec = $('.wall-sec');
+  const bricks = $$('.brick').sort((a, b) => a.dataset.n - b.dataset.n);
+  const layerOf = bricks.map(b => +b.closest('.wall-row').dataset.layer);
+  const count = $('[data-wall-count]');
+  const cards = $$('.wall-card');
+  const dots = $$('.dots i');
+  const ny = $('[data-ny]');
+  const nySteps = $$('.ny-step');
+  const navLinks = $$('.nav-links a');
+  const secs = navLinks.map(a => $(a.getAttribute('href')));
+  let lastN = -1, lastStep = -1;
+
+  const progress = el => {
+    const r = el.getBoundingClientRect();
+    return clamp(-r.top / Math.max(1, el.offsetHeight - innerHeight));
+  };
+
+  const onScroll = () => {
+    const p = progress(wallSec);
+    const n = reduce ? bricks.length : Math.round(clamp(p / .9) * bricks.length);
+    if (n !== lastN) {
+      lastN = n;
+      bricks.forEach((b, i) => b.classList.toggle('on', i < n));
+      count.textContent = String(n).padStart(2, '0');
+      const layer = n === 0 ? -1 : layerOf[n - 1];
+      cards.forEach(c => c.classList.toggle('is-on', +c.dataset.card === layer));
+      dots.forEach((d, i) => d.classList.toggle('on', i === layer + 1));
+    }
+
+    const s = Math.min(nySteps.length - 1, Math.floor(progress(ny) * nySteps.length));
+    if (s !== lastStep) {
+      lastStep = s; ny.dataset.step = s;
+      nySteps.forEach((el, i) => el.classList.toggle('on', i === s));
+    }
+
+    let cur = -1;
+    secs.forEach((sec, i) => { if (sec && sec.getBoundingClientRect().top < innerHeight * .4) cur = i; });
+    navLinks.forEach((a, i) => a.classList.toggle('on', i === cur));
+  };
+  let raf = 0;
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; onScroll(); }); }, { passive: true });
+  addEventListener('resize', onScroll);
+  onScroll();
 })();

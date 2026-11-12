@@ -1,31 +1,28 @@
 @page { size: A4; margin: 0; }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
-body { font: 400 9.4pt/1.45 "Manrope", sans-serif; color: #10201b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.page { width: 210mm; height: 297mm; display: grid; grid-template-columns: 68mm 1fr; overflow: hidden; background: #fff; }
+body { font: 400 9.4pt/1.45 "Instrument Sans", sans-serif; color: #16181d; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; display: grid; grid-template-columns: 68mm 1fr; overflow: hidden; background: #fffdf8; }
 
-aside { background: #10201b; color: #e8e1d3; padding: 12mm 8mm 10mm; }
-.photo { width: 40mm; height: 46mm; object-fit: cover; object-position: center 20%; display: block; margin: 0 auto 8mm; border-radius: 2px; outline: 1px solid #b8925a; outline-offset: 3px; }
-aside h3, section h2 {
-  font: 500 7.6pt/1 "JetBrains Mono", monospace; letter-spacing: .2em; text-transform: uppercase; color: #b8925a; margin: 0 0 3mm;
-}
-aside h3 { margin-top: 6.5mm; }
+aside { background: #0b0a08; color: #d9d3c7; padding: 12mm 8mm 10mm; }
+.photo { width: 40mm; height: 46mm; object-fit: cover; object-position: center 20%; display: block; margin: 0 auto 8mm; border-radius: 3mm; }
+aside h3, section h2 { font-size: 7.8pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 3mm; }
+aside h3 { margin-top: 6.5mm; color: #e3a28f; }
 aside p { margin: 0; color: #c9c3b6; }
 aside ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6mm; color: #c9c3b6; }
 aside b { color: #fff; font-weight: 600; }
 
 section { padding: 14mm 13mm 10mm 12mm; }
-header { border-bottom: 1px solid #d8cfbe; padding-bottom: 6mm; margin-bottom: 6mm; }
-.kicker { font: 500 7.6pt "JetBrains Mono", monospace; letter-spacing: .18em; text-transform: uppercase; color: #8a7347; margin: 0 0 3mm; }
-h1 { font: 300 40pt/0.95 "Fraunces", serif; letter-spacing: -.035em; margin: 0; }
-h1 em { color: #b8925a; }
-section h2 { margin-top: 6mm; display: flex; align-items: center; gap: 3mm; }
-section h2::after { content: ""; flex: 1; height: 1px; background: #e2dacb; }
-.item { display: grid; grid-template-columns: 22mm 1fr; gap: 4mm; padding: 2.2mm 0; break-inside: avoid; }
-.item-when { font: 500 8pt "JetBrains Mono", monospace; color: #10201b; }
-.item-when small { display: block; color: #8a8f88; font-size: 7pt; margin-top: .8mm; letter-spacing: .06em; text-transform: uppercase; }
-.item h4 { margin: 0; font: 500 11pt/1.2 "Fraunces", serif; }
-.item p { margin: .6mm 0 0; color: #4e5a53; }
-.item p.where { color: #8a7347; font-weight: 600; font-size: 8.6pt; margin-top: .4mm; }
+header { border-bottom: 1px solid #e2ddd3; padding-bottom: 6mm; margin-bottom: 5mm; }
+.kicker { font-size: 8pt; font-weight: 600; text-transform: uppercase; color: #80242c; margin: 0 0 2mm; }
+h1 { font-size: 34pt; font-weight: 600; line-height: 1; letter-spacing: -.035em; margin: 0; }
+section h2 { color: #80242c; margin-top: 6mm; display: flex; align-items: center; gap: 3mm; }
+section h2::after { content: ""; flex: 1; height: 1px; background: #e2ddd3; }
+.item { display: grid; grid-template-columns: 24mm 1fr; gap: 4mm; padding: 2.1mm 0; break-inside: avoid; }
+.item-when { font-weight: 600; font-size: 8.6pt; }
+.item-when small { display: block; color: #6e747c; font-weight: 400; font-size: 7.6pt; margin-top: .6mm; }
+.item h4 { margin: 0; font-size: 10.6pt; font-weight: 600; letter-spacing: -.01em; }
+.item p { margin: .6mm 0 0; color: #4a4f56; }
+.item p.where { color: #80242c; font-weight: 600; font-size: 8.6pt; margin-top: .3mm; }
 .chips { display: flex; flex-wrap: wrap; gap: 2mm; }
-.chips span { border: 1px solid #d8cfbe; border-radius: 99px; padding: 1mm 3mm; font-size: 8.4pt; }
+.chips span { border: 1px solid #e2ddd3; background: #f7f4ed; border-radius: 99px; padding: 1mm 3mm; font-size: 8.4pt; }
