@@ -4,7 +4,11 @@ html, body { margin: 0; }
 body { font: 400 9.4pt/1.45 "Instrument Sans", sans-serif; color: #16181d; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .page { width: 210mm; height: 297mm; display: grid; grid-template-columns: 68mm 1fr; overflow: hidden; background: #faf5ec; }
 
-aside { background: #2b1f16; color: #e2d6c3; padding: 12mm 8mm 10mm; }
+aside { background: #2b1f16; color: #e2d6c3; padding: 12mm 8mm 10mm; display: flex; flex-direction: column; }
+.qr { margin-top: auto; display: flex; align-items: center; gap: 3mm; padding-top: 5mm; }
+.qr img { width: 19mm; height: 19mm; border-radius: 1.5mm; flex: none; }
+.qr p { margin: 0; font-size: 7pt; line-height: 1.4; color: #c9c3b6; word-break: break-all; }
+.qr b { display: block; font-size: 7.8pt; letter-spacing: .06em; text-transform: uppercase; color: #e3a28f; word-break: normal; }
 .photo { width: 40mm; height: 46mm; object-fit: cover; object-position: center 20%; display: block; margin: 0 auto 8mm; border-radius: 3mm; }
 aside h3, section h2 { font-size: 7.8pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 3mm; }
 aside h3 { margin-top: 6.5mm; color: #e3a28f; }

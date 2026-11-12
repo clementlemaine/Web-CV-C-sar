@@ -27,6 +27,28 @@
   $('[data-close]', modal).addEventListener('click', () => modal.close());
   modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
 
+  // --- aperçu mobile : le site dans un cadre de téléphone
+  if (window.self !== window.top) doc.classList.add('in-frame');
+  const phoneModal = $('.phone-modal');
+  if (phoneModal) {
+    const frame = $('iframe', phoneModal);
+    const fit = () => phoneModal.style.setProperty('--s', Math.min(1, (innerHeight - 48) / 868, (innerWidth - 32) / 414));
+    $('[data-phone]').addEventListener('click', () => {
+      if (!frame.getAttribute('src')) frame.src = location.pathname;
+      fit(); phoneModal.showModal();
+    });
+    $('[data-phone-close]', phoneModal).addEventListener('click', () => phoneModal.close());
+    phoneModal.addEventListener('click', e => { if (e.target === phoneModal) phoneModal.close(); });
+    addEventListener('resize', fit);
+  }
+
+  // --- QR code plein écran (aussi via l'adresse …/#qr)
+  const qrModal = $('.qr-modal');
+  $$('[data-open-qr]').forEach(b => b.addEventListener('click', () => qrModal.showModal()));
+  $('[data-close]', qrModal).addEventListener('click', () => qrModal.close());
+  qrModal.addEventListener('click', e => { if (e.target === qrModal) qrModal.close(); });
+  if (location.hash === '#qr') qrModal.showModal();
+
   // --- apparitions
   const io = new IntersectionObserver(es => es.forEach(en => {
     if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
@@ -63,7 +85,34 @@
     });
   }
 
-  // --- scroll : trajet, New York, nav active
+  // --- reflet qui suit la souris sur les cartes
+  if (matchMedia('(pointer: fine)').matches) {
+    $$('.spot').forEach(el => el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      el.style.setProperty('--my', `${e.clientY - r.top}px`);
+    }));
+  }
+
+  // --- New York : les chiffres défilent jusqu'à leur valeur
+  const counts = $$('[data-count]');
+  if (counts.length && !reduce) {
+    counts.forEach(el => { el.textContent = '0'; });
+    new IntersectionObserver((es, o) => {
+      if (!es[0].isIntersecting) return;
+      o.disconnect();
+      const t0 = performance.now();
+      const tick = now => {
+        const k = clamp((now - t0) / 1400);
+        const ease = 1 - Math.pow(1 - k, 3);
+        counts.forEach(el => { el.textContent = Math.round(+el.dataset.count * ease); });
+        if (k < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: .4 }).observe($('.ny-card'));
+  }
+
+  // --- scroll : trajet, nav active
   const routeSec = $('.route-sec');
   const line = $('.route-line', routeSec);
   const plane = $('.plane', routeSec);
@@ -78,11 +127,9 @@
     g.setAttribute('transform', `translate(${pt.x} ${pt.y})`);
     return len;
   });
-  const ny = $('[data-ny]');
-  const nySteps = $$('.ny-step');
   const navLinks = $$('.nav-links a');
   const secs = navLinks.map(a => $(a.getAttribute('href')));
-  let lastLeg = -1, lastStep = -1;
+  let lastLeg = -1;
 
   const progress = el => {
     const r = el.getBoundingClientRect();
@@ -104,11 +151,7 @@
       legs.forEach((el, i) => el.classList.toggle('is-on', i === leg));
     }
 
-    const s = Math.min(nySteps.length - 1, Math.floor(progress(ny) * nySteps.length));
-    if (s !== lastStep) {
-      lastStep = s; ny.dataset.step = s;
-      nySteps.forEach((el, i) => el.classList.toggle('on', i === s));
-    }
+    doc.classList.toggle('past-hero', scrollY > innerHeight * .6);
 
     let cur = -1;
     secs.forEach((sec, i) => { if (sec && sec.getBoundingClientRect().top < innerHeight * .4) cur = i; });

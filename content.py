@@ -5,6 +5,7 @@ NAME = "César Mateu"
 EMAIL = "cesarmateu2003@gmail.com"
 PHONE = "+33 6 23 15 66 63"
 ADDRESS = "Calle Ramón de la Cruz 76, Madrid"
+SITE_URL = "https://clementlemaine.github.io/Web-CV-C-sar/"  # adresse publique : le QR code y renvoie
 LINKEDIN = ""  # à compléter : URL du profil LinkedIn (le bouton est masqué tant que c'est vide)
 
 LANGS = ["fr", "en", "es"]
@@ -113,8 +114,9 @@ T = {
              "steps_h": "Progression",
              "steps": [("Runner", "2019 · La Compagnie Française"), ("Maître d'hôtel", "2020 · Ma Biche sur le Toit"),
                        ("Chef barman", "2021 · Ma Biche sur le Toit"), ("Bar manager", "2023 · L'Envol Côté Plage")]},
+    "leg_more": "Voir en détail", "about": "À propos", "qr": "QR code", "qr_p": "Scannez pour ouvrir le site", "cv_qr": "Portfolio en ligne", "mobile_view": "Aperçu mobile",
     "edu_eyebrow": "Vatel Madrid — Hôtellerie", "edu_h": "Formation", "edu_now": "En cours",
-    "off_h": "Champion", "off_h2": "universitaire.",
+    "off_eyebrow": "Hors service", "off_h": "Champion", "off_h2": "universitaire.",
     "off_p": "Dix ans de rugby en France, puis le titre avec l'Universidad Europea. Dix-neuf ans de ski en club. Et toujours le cinéma, la musique et l'art.",
     "off_stats": [("10 ans", "de rugby"), ("19 ans", "de ski en club"), ("Cinéma", "musique & art")],
     "cv_eyebrow": "Curriculum", "cv_h": "Mon CV, en une page.",
@@ -167,8 +169,9 @@ T = {
              "steps_h": "Progression",
              "steps": [("Runner", "2019 · La Compagnie Française"), ("Head waiter", "2020 · Ma Biche sur le Toit"),
                        ("Head barman", "2021 · Ma Biche sur le Toit"), ("Bar manager", "2023 · L'Envol Côté Plage")]},
+    "leg_more": "See the details", "about": "About", "qr": "QR code", "qr_p": "Scan to open the site", "cv_qr": "Online portfolio", "mobile_view": "Mobile preview",
     "edu_eyebrow": "Vatel Madrid — Hospitality", "edu_h": "Education", "edu_now": "Ongoing",
-    "off_h": "University", "off_h2": "champion.",
+    "off_eyebrow": "Off duty", "off_h": "University", "off_h2": "champion.",
     "off_p": "Ten years of rugby in France, then the title with Universidad Europea. Nineteen years in a ski club. And always film, music and art.",
     "off_stats": [("10 years", "of rugby"), ("19 years", "in a ski club"), ("Film", "music & art")],
     "cv_eyebrow": "Curriculum", "cv_h": "My CV, on one page.",
@@ -220,8 +223,9 @@ T = {
              "steps_h": "Progresión",
              "steps": [("Runner", "2019 · La Compagnie Française"), ("Maître", "2020 · Ma Biche sur le Toit"),
                        ("Jefe de barra", "2021 · Ma Biche sur le Toit"), ("Bar manager", "2023 · L'Envol Côté Plage")]},
+    "leg_more": "Ver en detalle", "about": "Sobre mí", "qr": "Código QR", "qr_p": "Escanea para abrir la web", "cv_qr": "Portfolio online", "mobile_view": "Vista móvil",
     "edu_eyebrow": "Vatel Madrid — Hotelería", "edu_h": "Formación", "edu_now": "En curso",
-    "off_h": "Campeón", "off_h2": "universitario.",
+    "off_eyebrow": "Fuera de servicio", "off_h": "Campeón", "off_h2": "universitario.",
     "off_p": "Diez años de rugby en Francia y después el título con la Universidad Europea. Diecinueve años de esquí en club. Y siempre el cine, la música y el arte.",
     "off_stats": [("10 años", "de rugby"), ("19 años", "de esquí en club"), ("Cine", "música y arte")],
     "cv_eyebrow": "Currículum", "cv_h": "Mi CV, en una página.",

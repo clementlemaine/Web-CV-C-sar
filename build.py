@@ -9,7 +9,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-from content import ADDRESS, EDUCATION, EMAIL, EXPERIENCES, LANGS, LINKEDIN, NAME, PHONE, ROUTE, T
+import segno
+
+from content import ADDRESS, EDUCATION, EMAIL, EXPERIENCES, LANGS, LINKEDIN, NAME, PHONE, ROUTE, SITE_URL, T
 
 ROOT = Path(__file__).parent
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
@@ -19,11 +21,19 @@ e = html.escape
 
 ARROW = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>'
 DOWN = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2v10M4 8l4 4 4-4M3 14h10"/></svg>'
+PHONE_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>'
 MOON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></svg>'
 
 
 def pdf_name(lang):
     return f"Cesar-Mateu-CV-{lang.upper()}.pdf"
+
+
+def qr_code():
+    """QR code vers le site : SVG pour la page et le CV, PNG haute résolution pour imprimer ou partager."""
+    qr = segno.make(SITE_URL, error="m")
+    qr.save(ROOT / "assets" / "qr.svg", scale=10, border=2, dark="#2b2118", light="#f8f2e8")
+    qr.save(ROOT / "assets" / "qr.png", scale=24, border=3, dark="#2b2118", light="#f8f2e8")
 
 
 def letters(word, start):
@@ -44,6 +54,7 @@ def page(lang):
         f'<g class="stop" data-stop="{i}"><circle class="stop-halo" r="18"/><circle class="stop-dot" r="7"/>'
         f'<text class="stop-code" y="-26">{r["code"]}</text><text class="stop-city" y="40">{e(r["city"])}</text></g>'
         for i, r in enumerate(ROUTE))
+    leg_targets = ["all4", "ny", "formation", "zuma"]
     panels = []
     for i, (r, (country, title, items, note)) in enumerate(zip(ROUTE, t["stops"])):
         lis = "".join(f'<li><span class="it-role">{e(a)}</span><span class="it-venue">{e(b)}</span>'
@@ -55,7 +66,8 @@ def page(lang):
               <h3 class="leg-city">{e(r['city'])}</h3>
               <p class="leg-title">{e(title)}</p>
             </div>
-            <div class="leg-body"><ul>{lis}</ul><p class="leg-note">{e(note)}</p></div>
+            <div class="leg-body"><ul>{lis}</ul><p class="leg-note">{e(note)}</p>
+              <a class="leg-more" href="#{leg_targets[i]}">{e(t['leg_more'])} {ARROW}</a></div>
           </article>""")
 
     z = t["zuma"]
@@ -64,25 +76,30 @@ def page(lang):
     pn = t["pines"]
     pines_bullets = "".join(f"<li>{e(b)}</li>" for b in pn["bullets"])
 
-    ny_steps = "".join(f'<div class="ny-step" data-step="{i}"><p class="big-n">{e(a)}</p><h3>{e(b)}</h3><p>{e(c)}</p></div>'
-                       for i, (a, b, c) in enumerate(t["ny"]))
+    ny_stats = "".join(f'<div class="ny-stat"><p class="big-n" data-count="{e(a)}">{e(a)}</p><h3>{e(b)}</h3><p>{e(c)}</p></div>'
+                       for a, b, c in t["ny"])
     flyers = "".join(f'<div class="flyer f{i}"><span class="flyer-k">NYC · 2022</span><strong>{e(c)}</strong><span class="flyer-d">Sat · 11PM</span></div>'
                      for i, c in enumerate(["Le Noir", "PHD", "Nebula", "Marquis"]))
 
     a4 = t["all4"]
     a4_tags = "".join(f'<span class="tag">{e(x)}</span>' for x in a4["tags"])
-    a4_steps = "".join(f'<li><span class="step-n">{i + 1}</span><strong>{e(a)}</strong><small>{e(b)}</small></li>'
+    a4_steps = "".join(f'<li style="--k:{i}"><span class="step-n">{i + 1}</span><strong>{e(a)}</strong><small>{e(b)}</small></li>'
                        for i, (a, b) in enumerate(a4["steps"]))
 
     edu = "".join(f"""
-      <article class="card edu" data-reveal>
-        <div class="edu-head">
-          <div><h3>{e(x['school'])}</h3><p class="edu-prog">{e(x['prog'][lang])}</p></div>
-          <span class="tag{' tag-live' if x.get('now') else ''}">{e(t['edu_now']) if x.get('now') else e(x['years'][lang])}</span>
-        </div>
-        <p>{e(x['desc'][lang])}</p>
-        <div class="edu-foot"><span class="edu-years">{e(x['years'][lang])}</span><span class="tags">{''.join(f'<span class="tag">{e(g)}</span>' for g in x['tags'][lang])}</span></div>
-      </article>""" for x in EDUCATION)
+        <li><details class="edu-row"{' open' if x.get('now') else ''}>
+          <summary>
+            <span class="edu-years">{e(x['years'][lang])}</span>
+            <div><h3>{e(x['school'])}{f' <span class="tag tag-live">{e(t["edu_now"])}</span>' if x.get('now') else ''}</h3><p class="edu-prog">{e(x['prog'][lang])}</p></div>
+            <span class="edu-plus" aria-hidden="true"></span>
+          </summary>
+          <div class="edu-more"><p>{e(x['desc'][lang])}</p><span class="tags">{''.join(f'<span class="tag">{e(g)}</span>' for g in x['tags'][lang])}</span></div>
+        </details></li>""" for x in EDUCATION)
+    skills = "".join(f'<span class="tag">{e(x)}</span>' for x in t["cv_skills"])
+    venues = " ".join(f'<span>{e(v)}</span><b>✦</b>' for v in
+                      ["Zuma Ibiza", "7Pines Resort", "Vatel Madrid", "Universidad Europea", "Le Noir", "PHD", "Nebula", "Marquis",
+                       "EF New York", "L'Envol Côté Plage", "Ma Biche sur le Toit", "La Compagnie Française"])
+    langs_list = "".join(f'<li><strong>{e(a)}</strong><span>{e(b)}</span></li>' for a, b in t["langs"])
 
     off_stats = "".join(f'<li><strong>{e(a)}</strong><span>{e(b)}</span></li>' for a, b in t["off_stats"])
     cv_langs = "".join(f'<a class="btn btn-quiet btn-sm" href="../cv/{pdf_name(l)}" download>{l.upper()}</a>' for l in LANGS)
@@ -127,14 +144,12 @@ def page(lang):
     <p class="hero-label">{e(t['hero_place'])}</p>
   </div>
   <div class="hero-mid">
-    <p class="hero-hello"><i></i><span>{e(t['hello'])}</span><i></i></p>
     <h1 class="hero-name"><span class="n1">{letters("César", 0)}</span><span class="n2">{letters("Mateu", 5)}</span></h1>
     <p class="hero-cities">Toulouse <b>·</b> New York <b>·</b> Madrid <b>·</b> Ibiza</p>
+    <p class="hero-bio">{e(t['hero_bio'])}</p>
   </div>
   <div class="hero-bottom">
-    <p class="hero-bio">{e(t['hero_bio'])}</p>
     <div class="hero-ctas">
-      <a class="btn btn-light" href="#parcours">{e(t['cta1'])} {ARROW}</a>
       <a class="btn btn-outline" href="#contact">{e(t['cta2'])}</a>
     </div>
   </div>
@@ -161,52 +176,51 @@ def page(lang):
   </div>
 </section>
 
+<div class="marquee" aria-hidden="true"><div class="marquee-track">{venues}{venues}</div></div>
+
 <section class="sec" id="experiences">
   <div class="wrap">
     <p class="eyebrow" data-reveal>{e(t['exp_eyebrow'])}</p>
     <h2 class="h2-lg" data-reveal>{e(t['exp_h'])}</h2>
 
-    <article class="dark-card zuma" data-reveal>
-      <div class="zuma-copy">
+    <div class="exp-grid">
+      <article class="dark-card zuma spot" id="zuma" data-reveal>
         <p class="chip-live"><i></i>{e(z['chip'])}</p>
         <h3>{e(z['h'])}</h3>
         <p>{e(z['p'])}</p>
+        <ol class="roles">{zuma_roles}</ol>
         <p class="zuma-name">Zuma Ibiza <span>· {e(z['tag'])}</span></p>
-      </div>
-      <ol class="roles">{zuma_roles}</ol>
-    </article>
+      </article>
 
-    <article class="card split pines" data-reveal>
-      <div class="split-copy">
-        <p class="eyebrow-sm">{e(pn['eyebrow'])}</p>
-        <h3>{e(pn['h'])}</h3>
-        <p>{e(pn['p'])}</p>
-        <ul class="bullets">{pines_bullets}</ul>
-      </div>
-      <div class="pines-visual" data-tilt>
-        <div class="keycard">
-          <div class="keycard-top"><span class="keycard-logo">7PINES</span><span>RESORT · IBIZA</span></div>
-          <div class="keycard-chip"></div>
-          <div class="keycard-bottom"><span>{e(pn['card'])}</span><b>2025</b></div>
+      <article class="card pines spot" data-reveal>
+        <div class="pines-visual" data-tilt>
+          <div class="keycard">
+            <div class="keycard-top"><span class="keycard-logo">7PINES</span><span>RESORT · IBIZA</span></div>
+            <div class="keycard-chip"></div>
+            <div class="keycard-bottom"><span>{e(pn['card'])}</span><b>2025</b></div>
+          </div>
+          <div class="luggage"><span>IBZ</span><small>César M.</small></div>
         </div>
-        <div class="luggage"><span>IBZ</span><small>César M.</small></div>
-      </div>
-    </article>
-  </div>
-
-  <div class="ny" data-ny>
-    <div class="ny-pin">
-      <div class="wrap ny-grid">
-        <div class="ny-copy"><p class="eyebrow">{e(t['ny_eyebrow'])}</p><div class="ny-steps">{ny_steps}</div></div>
-        <div class="flyers" aria-hidden="true">{flyers}</div>
-      </div>
+        <div class="pines-copy">
+          <p class="eyebrow-sm">{e(pn['eyebrow'])} · 7Pines Resort Ibiza</p>
+          <h3>{e(pn['h'])}</h3>
+          <p>{e(pn['p'])}</p>
+          <ul class="bullets">{pines_bullets}</ul>
+        </div>
+      </article>
     </div>
-  </div>
 
-  <div class="wrap">
-    <article class="card proj" data-reveal>
+    <article class="card ny-card spot" id="ny" data-reveal>
+      <div class="ny-copy">
+        <p class="eyebrow-sm">{e(t['ny_eyebrow'])}</p>
+        <div class="ny-stats">{ny_stats}</div>
+      </div>
+      <div class="flyers" aria-hidden="true">{flyers}</div>
+    </article>
+
+    <article class="card proj spot" id="all4" data-reveal>
       <div class="proj-head">
-        <div><h3>{e(a4['h'])}</h3><p class="proj-sub">{e(a4['sub'])}</p></div>
+        <div><p class="eyebrow-sm">Toulouse · 2019 — 2023</p><h3>{e(a4['h'])}</h3><p class="proj-sub">{e(a4['sub'])}</p></div>
         <span class="tags">{a4_tags}</span>
       </div>
       <p class="proj-p">{e(a4['p'])}</p>
@@ -215,53 +229,60 @@ def page(lang):
   </div>
 </section>
 
+<section class="statement-band">
+  <div class="wrap statement-grid">
+    <div>
+      <p class="eyebrow-sm" data-reveal>{e(t['off_eyebrow'])}</p>
+      <h2 class="h-xl" data-reveal>{e(t['off_h'])} <span class="u">{e(t['off_h2'])}<svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 14 C 80 4, 200 4, 296 10"/></svg></span></h2>
+    </div>
+    <div data-reveal>
+      <p class="statement-p">{e(t['off_p'])}</p>
+      <ul class="off-stats">{off_stats}</ul>
+    </div>
+  </div>
+</section>
+
 <section class="sec" id="formation">
   <div class="wrap">
     <p class="eyebrow" data-reveal>{e(t['edu_eyebrow'])}</p>
     <h2 class="h2-lg" data-reveal>{e(t['edu_h'])}</h2>
-    <div class="edu-grid">{edu}</div>
-  </div>
-</section>
-
-<section class="sec statement">
-  <div class="wrap statement-grid">
-    <div>
-      <h2 class="h-xl" data-reveal>{e(t['off_h'])} <span class="u">{e(t['off_h2'])}<svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 14 C 80 4, 200 4, 296 10"/></svg></span></h2>
-      <p class="statement-p" data-reveal>{e(t['off_p'])}</p>
-    </div>
-    <ul class="off-stats" data-reveal>{off_stats}</ul>
-  </div>
-</section>
-
-<section class="sec" id="cv">
-  <div class="wrap">
-    <div class="card cv-card" data-reveal>
-      <div class="cv-copy">
-        <p class="eyebrow">{e(t['cv_eyebrow'])}</p>
-        <h2>{e(t['cv_h'])}</h2>
-        <p>{e(t['cv_p'])}</p>
-        <div class="row">
-          <a class="btn btn-primary" href="{cv_href}" download>{DOWN} {e(t['cv_dl'])}</a>
-          <button class="btn btn-quiet" type="button" data-open-cv>{e(t['cv_view'])}</button>
-        </div>
-        <div class="row cv-langs">{cv_langs}</div>
+    <div class="edu-layout">
+      <ul class="card edu-list" data-reveal>{edu}</ul>
+      <div class="side">
+        <article class="card side-card spot" data-reveal>
+          <p class="eyebrow-sm">{e(t['cv_langs_h'])}</p>
+          <ul class="langs-list">{langs_list}</ul>
+        </article>
+        <article class="card side-card spot" data-reveal>
+          <p class="eyebrow-sm">{e(t['cv_skills_h'])}</p>
+          <div class="tags skills">{skills}</div>
+        </article>
       </div>
-      <button class="sheet" type="button" data-open-cv aria-label="{e(t['cv_view'])}">
-        <img src="../cv/preview-{lang}.png" alt="CV — {e(NAME)}" width="794" height="1123" loading="lazy">
-      </button>
     </div>
   </div>
 </section>
 
 <footer class="site-footer" id="contact">
   <div class="wrap">
-    <p class="eyebrow">{e(t['contact_eyebrow'])}</p>
-    <h2>{e(t['contact_h'])}</h2>
-    <p class="footer-p">{e(t['contact_p'])}</p>
-    <div class="row">
-      <a class="btn btn-primary" href="{cv_href}" download>{DOWN} {e(t['cv_dl']).upper()}</a>
-      <a class="btn btn-quiet mail" data-u="{e(user)}" data-d="{e(domain)}" href="#">…</a>
-      {linkedin}
+    <div class="card contact-card spot" data-reveal>
+      <div class="contact-copy">
+        <p class="eyebrow">{e(t['contact_eyebrow'])}</p>
+        <h2>{e(t['contact_h'])}</h2>
+        <p class="footer-p">{e(t['contact_p'])} {e(t['cv_p'])}</p>
+        <div class="row">
+          <a class="btn btn-primary" href="{cv_href}" download>{DOWN} {e(t['cv_dl'])}</a>
+          <a class="btn btn-quiet mail" data-u="{e(user)}" data-d="{e(domain)}" href="#">…</a>
+          {linkedin}
+        </div>
+        <div class="row cv-langs"><span class="cv-langs-l">PDF</span>{cv_langs}<button class="btn btn-quiet btn-sm" type="button" data-open-cv>{e(t['cv_view'])}</button></div>
+        <button class="qr-tile" type="button" data-open-qr>
+          <img src="../assets/qr.svg" alt="" width="72" height="72">
+          <span><strong>{e(t['qr'])}</strong><small>{e(t['qr_p'])}</small></span>
+        </button>
+      </div>
+      <button class="sheet" type="button" data-open-cv aria-label="{e(t['cv_view'])}">
+        <img src="../cv/preview-{lang}.png" alt="CV — {e(NAME)}" width="794" height="1123" loading="lazy">
+      </button>
     </div>
     <p class="copyright">© 2026 {e(NAME)}. {e(t['footer'])}</p>
   </div>
@@ -275,6 +296,18 @@ def page(lang):
     <button class="btn btn-quiet btn-sm" type="button" data-close>{e(t['close'])}</button></span>
   </div>
   <img src="../cv/preview-{lang}.png" alt="CV — {e(NAME)}" width="794" height="1123">
+</dialog>
+<dialog class="qr-modal" aria-label="{e(t['qr'])}">
+  <img src="../assets/qr.svg" alt="{e(t['qr'])} — {e(SITE_URL)}" width="320" height="320">
+  <p class="qr-name">{e(NAME)}</p>
+  <p class="qr-url">{e(SITE_URL.replace('https://', '').rstrip('/'))}</p>
+  <div class="row"><a class="btn btn-quiet btn-sm" href="../assets/qr.png" download="Cesar-Mateu-QR.png">{DOWN} PNG</a>
+  <button class="btn btn-primary btn-sm" type="button" data-close>{e(t['close'])}</button></div>
+</dialog>
+<button class="phone-btn" type="button" data-phone aria-label="{e(t['mobile_view'])}" title="{e(t['mobile_view'])}">{PHONE_ICON}<span>{e(t['mobile_view'])}</span></button>
+<dialog class="phone-modal" aria-label="{e(t['mobile_view'])}">
+  <button class="phone-close" type="button" data-phone-close aria-label="{e(t['close'])}">×</button>
+  <div class="phone"><div class="phone-notch"></div><div class="phone-status"><span>9:41</span><span class="phone-icons"><i></i><i></i><i></i><b></b></span></div><iframe title="{e(t['mobile_view'])}" loading="lazy"></iframe></div>
 </dialog>
 <script src="../assets/main.js"></script>
 </body>
@@ -323,6 +356,7 @@ def cv(lang):
     <ul><li>{e(EMAIL)}</li><li>{e(PHONE)}</li><li>{e(ADDRESS)}</li>{li}<li>{e(t['licence'])}</li></ul>
     <h3>{e(t['cv_langs_h'])}</h3><ul>{langs}</ul>
     <h3>{e(t['cv_int_h'])}</h3><ul>{ints}</ul>
+    <div class="qr"><img src="../assets/qr.svg" alt=""><p><b>{e(t['cv_qr'])}</b>{e(SITE_URL.replace('https://', '').rstrip('/'))}</p></div>
   </aside>
   <section>
     <header><p class="kicker">{e(t['cv_title'])} · Vatel Madrid</p><h1>{e(NAME)}</h1></header>
@@ -341,6 +375,7 @@ def chrome(*args):
 
 
 def main():
+    qr_code()
     for lang in LANGS:
         d = ROOT / lang
         d.mkdir(exist_ok=True)
