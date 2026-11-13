@@ -99,7 +99,7 @@ def page(lang):
     skills = "".join(f'<span class="tag">{e(x)}</span>' for x in t["cv_skills"])
     venues = " ".join(f'<span>{e(v)}</span><b>✦</b>' for v in
                       ["Zuma Ibiza", "7Pines Resort", "Vatel Madrid", "Universidad Europea", "Le Noir", "PHD", "Nebula", "Marquis",
-                       "EF New York", "L'Envol Côté Plage", "Ma Biche sur le Toit", "La Compagnie Française"])
+                       "L'Envol Côté Plage", "Ma Biche sur le Toit", "La Compagnie Française"])
     langs_list = "".join(f'<li><strong>{e(a)}</strong><span>{e(b)}</span></li>' for a, b in t["langs"])
 
     off_stats = "".join(f'<li><strong>{e(a)}</strong><span>{e(b)}</span></li>' for a, b in t["off_stats"])
